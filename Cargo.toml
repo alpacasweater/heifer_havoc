@@ -1,0 +1,16 @@
+[package]
+name = "heifer_havoc"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+avian3d = { git = "https://github.com/Jondolf/avian", tag = "v0.2.1" }
+bevy = "0.15.0"
+rand = "0.9.1"
+
+
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 3
