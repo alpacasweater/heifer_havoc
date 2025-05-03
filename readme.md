@@ -4,6 +4,4 @@ Cow: https://poly.pizza/m/26zM1outCr
 poop: https://poly.pizza/m/65wuu48mFfG
 Farmer: https://poly.pizza/m/7pn3R6hPvE
 
-https://youtu.be/sQdrIU8EIwE
-
-[![Demo](https://youtu.be/sQdrIU8EIwE/0.jpg)](https://youtu.be/sQdrIU8EIwE)
+<video src="https://youtu.be/sQdrIU8EIwE" width="300" />
