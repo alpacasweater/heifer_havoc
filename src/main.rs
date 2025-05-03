@@ -20,7 +20,7 @@ use collisions::CollisionsPlugin;
 
 fn main() {
     App::new()
-    .insert_resource(ClearColor(Color::srgb(0.1, 0.1, 0.1)))
+    .insert_resource(ClearColor(Color::srgb(0.1, 0.4, 0.1)))
     .insert_resource(AmbientLight {
         color: Color::default(),
         brightness: 0.0

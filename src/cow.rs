@@ -38,8 +38,14 @@ fn spawn_cow(mut commands: Commands, scene_assets: Res<SceneAssets>) {
         acceleration: Acceleration::new(Vec3::ZERO),
         scene: SceneRoot(scene_assets.cow.clone()),
         collider: Collider::sphere(1.0),
-        transform: Transform::from_translation(START_TRANSLATION).with_rotation(Quat::from_rotation_x(PI/2.0)),
-    }, Cow
+        transform: Transform::from_translation(START_TRANSLATION).with_rotation(Quat::from_euler(
+            EulerRot::YXZ,
+            PI, // yaw
+            -PI/2.0, // pitch
+            0.0, // roll
+        )),
+    }, 
+    Cow
 ));
 }
 
@@ -53,26 +59,26 @@ fn cow_movement_controls(
     let mut speed = 0.0f32;
 
     // Translation
-    if keyboard_input.pressed(KeyCode::KeyW) {
-        speed = COW_SPEED;
-    } else if keyboard_input.pressed(KeyCode::KeyS) {
+    if keyboard_input.pressed(KeyCode::KeyW) || keyboard_input.pressed(KeyCode::ArrowUp) {
         speed = -COW_SPEED;
+    } else if keyboard_input.pressed(KeyCode::KeyS) || keyboard_input.pressed(KeyCode::ArrowDown) {
+        speed = COW_SPEED;
     }
 
     // Rotation 
     // yaw
-    if keyboard_input.pressed(KeyCode::KeyA) {
+    if keyboard_input.pressed(KeyCode::KeyA) || keyboard_input.pressed(KeyCode::ArrowLeft) {
         yaw_rate = COW_YAW_RATE;
-    } else if keyboard_input.pressed(KeyCode::KeyD) {
+    } else if keyboard_input.pressed(KeyCode::KeyD) || keyboard_input.pressed(KeyCode::ArrowRight) {
         yaw_rate = -COW_YAW_RATE;
     }
 
     // roll
-    if keyboard_input.pressed(KeyCode::KeyQ) {
-        roll_rate = COW_ROLL_RATE;
-    } else if keyboard_input.pressed(KeyCode::KeyE) {
-        roll_rate = -COW_ROLL_RATE;
-    }
+    // if keyboard_input.pressed(KeyCode::KeyQ) {
+    //     roll_rate = COW_ROLL_RATE;
+    // } else if keyboard_input.pressed(KeyCode::KeyE) {
+    //     roll_rate = -COW_ROLL_RATE;
+    // }
 
     // pitch
     // if keyboard_input.pressed(KeyCode::KeyZ) {
@@ -102,7 +108,7 @@ fn cow_weapon_controls(
             acceleration: Acceleration::new(Vec3::ZERO),
             scene: SceneRoot(scene_assets.poop.clone()), // Assuming poop is the projectile
             collider: Collider::sphere(0.1),
-            transform: Transform::from_translation(transform.translation + transform.local_z() * POOP_OFFSET_Z + transform.local_y() * POOP_OFFSET_Y),
+            transform: Transform::from_translation(transform.translation + transform.local_z() * POOP_OFFSET_Z + transform.local_y() * POOP_OFFSET_Y).with_scale(Vec3::splat(3.0)),
         }, Poop
     ));
     }

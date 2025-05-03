@@ -4,13 +4,14 @@ use bevy::prelude::*;
 use avian3d::prelude::*;
 use crate::asset_loader::SceneAssets;
 use crate::movement::{MovingObjectBundle, Velocity, Acceleration};
+use std::f32::consts::PI;
 
 const SPAWN_RANGE_X: Range<f32> = -25.0..25.0;
 const SPAWN_RANGE_Y: Range<f32> = -25.0..25.0;
 const SPAWN_RANGE_Z: Range<f32> = 0.0..0.0;
 const NOMINAL_VELOCITY: f32 = 5.0;
 const NOMINAL_ACCELERATION: f32 = 1.0;
-const SPAWN_TIME_SECONDS: f32 = 0.1;
+const SPAWN_TIME_SECONDS: f32 = 0.5;
 
 #[derive(Component, Debug)]
 pub struct Farmer;
@@ -46,9 +47,14 @@ fn spawn_farmer(mut commands: Commands, mut spawn_timer: ResMut<SpawnTimer>, tim
         commands.spawn((MovingObjectBundle {
             velocity: Velocity::new(velocity),
             acceleration: Acceleration::new(acceleration),
-            scene: SceneRoot(scene_assets.farmer.clone()),
-            collider: Collider::capsule(0.5, 2.0),
-            transform: Transform::from_translation(translation),
+            scene: SceneRoot(scene_assets.farmer.clone()), // Scale the farmer model down to size
+            collider: Collider::capsule(1.0, 2.0),
+            transform: Transform::from_translation(translation).with_scale(Vec3::splat(3.0)).with_rotation(Quat::from_euler(
+                EulerRot::YXZ,
+                0.0, // yaw
+                PI/2.0, // pitch
+                0.0, // roll
+            )),
         }, 
         Farmer
     ));  
