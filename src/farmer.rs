@@ -5,13 +5,14 @@ use avian3d::prelude::*;
 use crate::asset_loader::SceneAssets;
 use crate::movement::{MovingObjectBundle, Velocity, Acceleration};
 use std::f32::consts::PI;
+use crate::cow::Cow;
 
 const SPAWN_RANGE_X: Range<f32> = -25.0..25.0;
 const SPAWN_RANGE_Y: Range<f32> = -25.0..25.0;
 const SPAWN_RANGE_Z: Range<f32> = 0.0..0.0;
-const NOMINAL_VELOCITY: f32 = 5.0;
+const NOMINAL_VELOCITY: f32 = 8.0;
 const NOMINAL_ACCELERATION: f32 = 1.0;
-const SPAWN_TIME_SECONDS: f32 = 0.5;
+const SPAWN_TIME_SECONDS: f32 = 0.1;
 
 #[derive(Component, Debug)]
 pub struct Farmer;
@@ -27,7 +28,7 @@ impl Plugin for FarmerPlugin {
         app.insert_resource(SpawnTimer {
             timer: Timer::from_seconds(SPAWN_TIME_SECONDS, TimerMode::Repeating),
         })
-        .add_systems(Update, spawn_farmer);
+        .add_systems(Update, (spawn_farmer, update_velocity));
     }
 }
 
@@ -59,5 +60,12 @@ fn spawn_farmer(mut commands: Commands, mut spawn_timer: ResMut<SpawnTimer>, tim
         Farmer
     ));  
 
+    }
+}
+
+fn update_velocity(mut query: Query<(&mut Velocity, &Transform), With<Farmer>>, cows: Query<&Transform, With<Cow>>) {
+    let cow_positions: Vec<Vec3> = cows.iter().map(|cow| cow.translation).collect();
+    for (mut velocity, transform) in query.iter_mut() {
+        velocity.value =   (cow_positions.first().unwrap_or(&Vec3::ZERO) - transform.translation).normalize()*NOMINAL_VELOCITY; // Update velocity based on cow positions
     }
 }
