@@ -1,3 +1,4 @@
+# Overview
 The creation of this project follows this fantastic Bevy tutorial series by Zymertu Games on YouTube with my own twist on some details. https://www.youtube.com/watch?v=B6ZFuYYZCSY&list=PL2wAo2qwCxGDp9fzBOTy_kpUTSwM1iWWd
 
 Cow: https://poly.pizza/m/26zM1outCr
@@ -6,12 +7,15 @@ Farmer: https://poly.pizza/m/7pn3R6hPvE
 
 [![Watch the video](https://img.youtube.com/vi/sQdrIU8EIwE/hqdefault.jpg)](https://youtu.be/sQdrIU8EIwE)
 
-// TODO: 
+# [Play the Game!](https://alpacasweater.github.io/heifer_havoc/)
+
+
+# TODO: 
 - [ ] Look into [web deployment on github pages](https://bevy-cheatbook.github.io/platforms/wasm.html)
 - [ ] Follow on [tutorial 4](https://youtu.be/pm4LLMsKJQg?si=9BDM8LHQ_XFKPQ4l)
 - [ ] Follow on [tutorial 5](https://www.youtube.com/watch?v=mSuQ-dQSxys)
 
-// Features TODO
+# Features TODO
 - [ ] There's a request for levels and bosses.
 - [ ] I Want an ammo limit with reloading by eating different foods that the cow can pick up.
 - [ ] I want different foods to correspond to different weapons
