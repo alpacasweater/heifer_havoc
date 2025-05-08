@@ -3,8 +3,9 @@ use bevy::{
     prelude::*,
 };
 use avian3d::prelude::*;
+use std::collections::HashSet;
 
-
+use crate::schedule::InGameSet;
 use crate::cow::Poop;
 use crate::farmer::Farmer;
 
@@ -20,40 +21,14 @@ impl Plugin for CollisionsPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(Score(0))
         .add_systems(Startup, setup)
-        .add_systems(Update, print_collisions)
-        .add_systems(Update, text_update_system);
-        
+        .add_systems(
+            Update, 
+            (poop_farmer_collisions, text_update_system).chain().in_set(InGameSet::DespawnEntities)
+        );
     }
 }
 
-fn print_collisions(
-    mut commands: Commands,
-    mut collision_event_reader: EventReader<Collision>,
-    farmers: Query<(), With<Farmer>>,
-    poops: Query<(), With<Poop>>,
-    mut score: ResMut<Score>,
-) {
-    for Collision(contacts) in collision_event_reader.read() {
-        let a = contacts.entity1;
-        let b = contacts.entity2;
-
-        let is_farmer_and_poop =
-            (farmers.get(a).is_ok() && poops.get(b).is_ok()) ||
-            (poops.get(a).is_ok() && farmers.get(b).is_ok());
-
-        if is_farmer_and_poop {
-            commands.entity(a).despawn();
-            commands.entity(b).despawn();
-
-            // Update score
-            score.0 += 1;
-        }
-    }
-}
-
-
-
-fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+fn setup(mut commands: Commands) {
 
     // Text with multiple sections
     commands
@@ -76,6 +51,41 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             TextColor(GOLD.into()),
             ScoreText,
         ));
+}
+
+fn poop_farmer_collisions(
+    mut commands: Commands,
+    mut collision_event_reader: EventReader<Collision>,
+    farmers: Query<(), With<Farmer>>,
+    poops: Query<(), With<Poop>>,
+    mut score: ResMut<Score>,
+) {
+    // Create a HashSet to store a single reference to each entity to despawn
+    let mut farmers_to_despawn: HashSet<Entity> = HashSet::new();
+    let mut poops_to_despawn: HashSet<Entity> = HashSet::new();
+
+    for Collision(contacts) in collision_event_reader.read() {
+        // Check if the entity1 is a farmer and entity2 is a poop involved in the collision are a farmer and a poop
+        if farmers.get(contacts.entity1).is_ok() && poops.get(contacts.entity2).is_ok() {
+            farmers_to_despawn.insert(contacts.entity1);
+            poops_to_despawn.insert(contacts.entity2);
+        }
+        else if poops.get(contacts.entity1).is_ok() && farmers.get(contacts.entity2).is_ok() {
+            poops_to_despawn.insert(contacts.entity1);
+            farmers_to_despawn.insert(contacts.entity2);
+        }
+    }
+
+    score.0 += farmers_to_despawn.len() as u32;
+    for farmer_entity in farmers_to_despawn {
+        commands.entity(farmer_entity).despawn();
+        
+    }
+
+    for poop_entity in poops_to_despawn {
+        commands.entity(poop_entity).despawn();
+        
+    }
 }
 
 fn text_update_system(

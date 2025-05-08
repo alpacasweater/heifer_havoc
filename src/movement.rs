@@ -1,6 +1,8 @@
 use bevy::prelude::*;
 use avian3d::prelude::*;
 
+use crate::schedule::InGameSet;
+
 #[derive(Component, Debug)]
 pub struct Velocity {
     pub value: Vec3,
@@ -35,7 +37,11 @@ pub struct MovingObjectBundle {
 pub struct MovementPlugin;
 impl Plugin for MovementPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, (update_position, update_velocity));
+        app.add_systems(
+            Update, 
+            (update_velocity, update_position).chain()
+            .in_set(InGameSet::EntityUpdates),
+        );
     }
 }
 

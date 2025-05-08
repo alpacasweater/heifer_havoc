@@ -6,6 +6,7 @@ mod farmer;
 mod asset_loader;
 mod despawn;
 mod collisions;
+mod schedule;
 
 use avian3d::prelude::*;
 use bevy::prelude::*;
@@ -43,6 +44,7 @@ fn main() {
     .add_plugins(AssetLoaderPlugin)
     .add_plugins(DespawnPlugin)
     .add_plugins(CollisionsPlugin)
+    .add_plugins(schedule::SchedulePlugin)
     .run();
 }
 

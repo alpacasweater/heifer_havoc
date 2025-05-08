@@ -5,11 +5,12 @@ use std::f32::consts::PI;
 
 use crate::asset_loader::SceneAssets;
 use crate::movement::{MovingObjectBundle, Velocity, Acceleration};
+use crate::schedule::InGameSet;
 
 const START_TRANSLATION: Vec3 = Vec3::new(0.0, 0.0, 0.0);
 const COW_SPEED: f32 = 10.0;
-const COW_ROLL_RATE: f32 = 1.0; // radians per second
-const COW_PITCH_RATE: f32 = 1.0; // radians per second
+// const COW_ROLL_RATE: f32 = 1.0; // radians per second
+// const COW_PITCH_RATE: f32 = 1.0; // radians per second
 const COW_YAW_RATE: f32 = 3.0; // radians per second
 const COW_PROJECTILE_SPEED: f32 = 20.0;
 const POOP_OFFSET_Z: f32 = -3.0; // Offset to spawn the projectile in front of the cow
@@ -21,13 +22,19 @@ const POOP_OFFSET_Y: f32 = 0.0; // Offset to spawn the projectile at the same he
 pub struct Cow;
 
 #[derive(Component, Debug)]
+pub struct CowShield;
+
+#[derive(Component, Debug)]
 pub struct Poop;
 
 pub struct CowPlugin;
 impl Plugin for CowPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(PostStartup, spawn_cow)
-        .add_systems(Update, (cow_movement_controls, cow_weapon_controls));
+        .add_systems(
+            Update, 
+            (cow_movement_controls, cow_weapon_controls, cow_shield_controls).chain().in_set(InGameSet::UserInput)
+        );
     }
 }
 
@@ -54,8 +61,11 @@ fn cow_movement_controls(
     keyboard_input: Res<ButtonInput<KeyCode>>, 
     time: Res<Time>
 ) {
-    let (mut transform, mut velocity) = query.single_mut(); // Panics if there is more than one entity in the query
-    let (mut roll_rate, mut pitch_rate, mut yaw_rate) = (0.0f32, 0.0f32, 0.0f32);
+    let Ok((mut transform, mut velocity)) = query.get_single_mut() else {
+        return;
+    };
+
+    let (_roll_rate, _pitch_rate, mut yaw_rate) = (0.0f32, 0.0f32, 0.0f32);
     let mut speed = 0.0f32;
 
     // Translation
@@ -87,9 +97,9 @@ fn cow_movement_controls(
     //     pitch_rate = -COW_PITCH_RATE;
     // }
 
-    transform.rotate_local_x(pitch_rate * time.delta_secs());
+    // transform.rotate_local_x(pitch_rate * time.delta_secs());
     transform.rotate_local_y(yaw_rate * time.delta_secs());
-    transform.rotate_local_z(roll_rate * time.delta_secs());
+    // transform.rotate_local_z(roll_rate * time.delta_secs());
 
     velocity.value = transform.forward() * speed; // transform.forward() is equivalent to -local_z()
 }
@@ -100,7 +110,10 @@ fn cow_weapon_controls(
     keyboard_input: Res<ButtonInput<KeyCode>>, 
     scene_assets: Res<SceneAssets>,
 ) {
-    let transform = query.single(); // Panics if there is more than one entity in the query
+    let Ok(transform) = query.get_single() else {
+        return;
+    };
+
     // pitch
     if keyboard_input.pressed(KeyCode::Space) {
         commands.spawn((MovingObjectBundle{
@@ -111,5 +124,19 @@ fn cow_weapon_controls(
             transform: Transform::from_translation(transform.translation + transform.local_z() * POOP_OFFSET_Z + transform.local_y() * POOP_OFFSET_Y).with_scale(Vec3::splat(3.0)),
         }, Poop
     ));
+    }
+}
+
+fn cow_shield_controls(
+    mut commands: Commands,
+    query: Query<Entity, With<Cow>>, 
+    keyboard_input: Res<ButtonInput<KeyCode>>, 
+) {
+    let Ok(cow) = query.get_single() else {
+        return;
+    };
+
+    if keyboard_input.pressed(KeyCode::Tab) {
+        commands.entity(cow).insert(CowShield);
     }
 }

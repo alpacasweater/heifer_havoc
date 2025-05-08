@@ -4,6 +4,7 @@ use bevy::prelude::*;
 use avian3d::prelude::*;
 use crate::asset_loader::SceneAssets;
 use crate::movement::{MovingObjectBundle, Velocity, Acceleration};
+use crate::schedule::InGameSet;
 use std::f32::consts::PI;
 use crate::cow::Cow;
 
@@ -28,7 +29,10 @@ impl Plugin for FarmerPlugin {
         app.insert_resource(SpawnTimer {
             timer: Timer::from_seconds(SPAWN_TIME_SECONDS, TimerMode::Repeating),
         })
-        .add_systems(Update, (spawn_farmer, update_velocity));
+        .add_systems(
+            Update, 
+            (spawn_farmer, update_velocity).in_set(InGameSet::EntityUpdates)
+        );
     }
 }
 
