@@ -30,11 +30,6 @@ fn main() {
     .add_plugins(DefaultPlugins)
     // Avian3d physics engine
     .add_plugins(PhysicsPlugins::default())
-    // Rapier3D physics engine
-    // .add_plugins((
-    //     RapierPhysicsPlugin::<NoUserData>::default(),
-    //     RapierDebugRenderPlugin::default(),
-    // ))
     // User Defined Plugins
     .add_plugins(CameraPlugin)
     .add_plugins(CowPlugin)

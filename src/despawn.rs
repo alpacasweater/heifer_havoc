@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use crate::cow::{Cow, Poop};
 use crate::farmer::Farmer;
 use crate::schedule::InGameSet;
+use std::collections::HashSet;
 
 const DESPAWN_DISTANCE: f32 = 100.0;
 
@@ -18,11 +19,29 @@ impl Plugin for DespawnPlugin {
 
 fn despawn_far_away_entities(
     mut commands: Commands,
-    query: Query<(Entity, &GlobalTransform), Or<(With<Poop>, With<Cow>, With<Farmer>)>>,
+    despawn_query: Query<(Entity, &GlobalTransform), (Or<(With<Poop>, With<Farmer>)>, Without<Cow>)>,
+    cow_query: Query<(Entity, &GlobalTransform), With<Cow>>,
 ) {
-   for (entity, transform) in query.iter() {
-        if transform.translation().length() > DESPAWN_DISTANCE {
-            commands.entity(entity).despawn_recursive();
+    // Create a HashSet to store a single reference to each entity to despawn
+    let mut entities_to_despawn: HashSet<Entity> = HashSet::new();
+    for (entity, entity_transform) in despawn_query.iter() {
+        let mut despawn = true;
+        for (_cow_entity, cow_transform) in cow_query.iter() {
+            if (entity_transform.translation() - cow_transform.translation()).length() < DESPAWN_DISTANCE {
+                despawn = false;
+                break;
+            }
+        }
+        
+        if despawn {
+            entities_to_despawn.insert(entity);
         }
     }
+
+    for entity in entities_to_despawn {
+        commands.entity(entity).despawn();
+    }
 }
+
+
+

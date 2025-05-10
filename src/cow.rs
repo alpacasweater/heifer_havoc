@@ -8,7 +8,7 @@ use crate::movement::{MovingObjectBundle, Velocity, Acceleration};
 use crate::schedule::InGameSet;
 
 const START_TRANSLATION: Vec3 = Vec3::new(0.0, 0.0, 0.0);
-const COW_SPEED: f32 = 10.0;
+const COW_SPEED: f32 = 15.0;
 // const COW_ROLL_RATE: f32 = 1.0; // radians per second
 // const COW_PITCH_RATE: f32 = 1.0; // radians per second
 const COW_YAW_RATE: f32 = 3.0; // radians per second

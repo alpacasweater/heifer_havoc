@@ -8,9 +8,7 @@ use crate::schedule::InGameSet;
 use std::f32::consts::PI;
 use crate::cow::Cow;
 
-const SPAWN_RANGE_X: Range<f32> = -25.0..25.0;
-const SPAWN_RANGE_Y: Range<f32> = -25.0..25.0;
-const SPAWN_RANGE_Z: Range<f32> = 0.0..0.0;
+const SPAWN_RANGE_DISTANCE: Range<f32> = 15.0..90.0;
 const NOMINAL_VELOCITY: f32 = 8.0;
 const NOMINAL_ACCELERATION: f32 = 1.0;
 const SPAWN_TIME_SECONDS: f32 = 0.1;
@@ -36,16 +34,26 @@ impl Plugin for FarmerPlugin {
     }
 }
 
-fn spawn_farmer(mut commands: Commands, mut spawn_timer: ResMut<SpawnTimer>, time: Res<Time>, scene_assets: Res<SceneAssets>) {
+fn spawn_farmer(mut commands: Commands, mut spawn_timer: ResMut<SpawnTimer>, time: Res<Time>, scene_assets: Res<SceneAssets>, cow_query: Query<&Transform, With<Cow>>) {
+    let Ok(cow_transform) = cow_query.get_single() else {
+        return;
+    };
+    
     spawn_timer.timer.tick(time.delta());
     if spawn_timer.timer.finished() {
-        let random_vector = || Vec3::new(
-            rand::random::<f32>() * (SPAWN_RANGE_X.end - SPAWN_RANGE_X.start) + SPAWN_RANGE_X.start,
-            rand::random::<f32>() * (SPAWN_RANGE_Y.end - SPAWN_RANGE_Y.start) + SPAWN_RANGE_Y.start,
-            rand::random::<f32>() * (SPAWN_RANGE_Z.end - SPAWN_RANGE_Z.start) + SPAWN_RANGE_Z.start,
-        );
-
-        let translation = random_vector();
+        let random_vector = || {
+            let theta = rand::random::<f32>() * 2.0*PI;
+            Vec3::new(
+                theta.cos(),
+                theta.sin(),
+                0.0,
+            )
+        };
+            
+        let random_distance = || {
+            rand::random::<f32>() * (SPAWN_RANGE_DISTANCE.end - SPAWN_RANGE_DISTANCE.start) + SPAWN_RANGE_DISTANCE.start
+        };
+        let translation = random_vector()*random_distance() + cow_transform.translation;
         let velocity = random_vector().normalize_or_zero()*NOMINAL_VELOCITY; // Random velocity
         let acceleration = random_vector().normalize_or_zero()*NOMINAL_ACCELERATION; // Random velocity
 
