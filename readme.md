@@ -11,8 +11,8 @@ Farmer: https://poly.pizza/m/7pn3R6hPvE
 
 
 # TODO: 
-- [ ] Look into [web deployment on github pages](https://bevy-cheatbook.github.io/platforms/wasm.html)
-- [ ] Follow on [tutorial 4](https://youtu.be/pm4LLMsKJQg?si=9BDM8LHQ_XFKPQ4l)
+- [x] Look into [web deployment on github pages](https://bevy-cheatbook.github.io/platforms/wasm.html)
+- [x] Follow on [tutorial 4](https://youtu.be/pm4LLMsKJQg?si=9BDM8LHQ_XFKPQ4l)
 - [ ] Follow on [tutorial 5](https://www.youtube.com/watch?v=mSuQ-dQSxys)
 
 # Features TODO:
@@ -24,7 +24,7 @@ Farmer: https://poly.pizza/m/7pn3R6hPvE
 - [ ] Split screen for 2-4 people to play on the same machine
 - [ ] Support for gamepads
 - [ ] Spash screen and UI
-- [ ] Database to record high scores
+- [ ] Database to record high scores - half done
 - [ ] Support mobile somehow. Not sure what control inputs to use...
 
 // Notes:
