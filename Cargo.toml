@@ -8,6 +8,7 @@ avian3d = "0.2.1"
 bevy = "0.15.0"
 rand = "0.9.1"
 getrandom = { version = "0.3", features = ["wasm_js"] }
+virtual_joystick = "2.4.0"
 
 [profile.dev]
 opt-level = 1

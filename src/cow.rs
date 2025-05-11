@@ -6,6 +6,7 @@ use std::f32::consts::PI;
 use crate::asset_loader::SceneAssets;
 use crate::movement::{MovingObjectBundle, Velocity, Acceleration};
 use crate::schedule::InGameSet;
+use virtual_joystick::*;
 
 const START_TRANSLATION: Vec3 = Vec3::new(0.0, 0.0, 0.0);
 const COW_SPEED: f32 = 15.0;
@@ -30,12 +31,39 @@ pub struct Poop;
 pub struct CowPlugin;
 impl Plugin for CowPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(PostStartup, spawn_cow)
+        app.add_plugins(VirtualJoystickPlugin::<String>::default())
+        .add_systems(PostStartup, (spawn_cow, spawn_joystick))
         .add_systems(
             Update, 
             (cow_movement_controls, cow_weapon_controls, cow_shield_controls).chain().in_set(InGameSet::UserInput)
         );
     }
+}
+
+fn spawn_joystick(mut cmd: Commands, asset_server: Res<AssetServer>) {
+
+    // Spawn Virtual Joystick at horizontal center using helper function
+    create_joystick(
+        &mut cmd,
+        "PlayerVirtualJoystick".to_string(),
+        asset_server.load("Knob.png"),
+        asset_server.load("Outline.png"),
+        None,
+        None,
+        None,
+        Vec2::new(75., 75.),
+        Vec2::new(150., 150.),
+        Node {
+            width: Val::Px(150.),
+            height: Val::Px(150.),
+            position_type: PositionType::Absolute,
+            left: Val::Percent(50.),
+            bottom: Val::Percent(15.),
+            ..default()
+        },
+        JoystickFloating,
+        NoAction,
+    );
 }
 
 fn spawn_cow(mut commands: Commands, scene_assets: Res<SceneAssets>) {
@@ -59,6 +87,7 @@ fn spawn_cow(mut commands: Commands, scene_assets: Res<SceneAssets>) {
 fn cow_movement_controls(
     mut query: Query<(&mut Transform, &mut Velocity), With<Cow>>, 
     keyboard_input: Res<ButtonInput<KeyCode>>, 
+    mut joystick: EventReader<VirtualJoystickEvent<String>>,
     time: Res<Time>
 ) {
     let Ok((mut transform, mut velocity)) = query.get_single_mut() else {
@@ -68,7 +97,14 @@ fn cow_movement_controls(
     let (_roll_rate, _pitch_rate, mut yaw_rate) = (0.0f32, 0.0f32, 0.0f32);
     let mut speed = 0.0f32;
 
+    for j in joystick.read() {
+        let Vec2 { x, y } = j.axis();
+        speed = -y*COW_SPEED;
+        yaw_rate = -x*COW_YAW_RATE;
+    }
+
     // Translation
+
     if keyboard_input.pressed(KeyCode::KeyW) || keyboard_input.pressed(KeyCode::ArrowUp) {
         speed = -COW_SPEED;
     } else if keyboard_input.pressed(KeyCode::KeyS) || keyboard_input.pressed(KeyCode::ArrowDown) {

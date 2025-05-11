@@ -2389,6 +2389,7 @@ dependencies = [
  "bevy",
  "getrandom 0.3.2",
  "rand 0.9.1",
+ "virtual_joystick",
 ]
 
 [[package]]
@@ -4405,6 +4406,16 @@ name = "version_check"
 version = "0.9.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
+
+[[package]]
+name = "virtual_joystick"
+version = "2.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0d9b6d059873c6b1cbc780959eaae215519ac92cfd861257b25c7f616d5beadf"
+dependencies = [
+ "bevy",
+ "serde",
+]
 
 [[package]]
 name = "walkdir"
