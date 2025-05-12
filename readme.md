@@ -14,6 +14,7 @@ Farmer: https://poly.pizza/m/7pn3R6hPvE
 - [x] Look into [web deployment on github pages](https://bevy-cheatbook.github.io/platforms/wasm.html)
 - [x] Follow on [tutorial 4](https://youtu.be/pm4LLMsKJQg?si=9BDM8LHQ_XFKPQ4l)
 - [ ] Follow on [tutorial 5](https://www.youtube.com/watch?v=mSuQ-dQSxys)
+- [x] Migrate from Bevy 0.15 to 0.16 and use Avian 0.3
 
 # Features TODO:
 - [ ] There's a request for levels and bosses.
@@ -26,6 +27,7 @@ Farmer: https://poly.pizza/m/7pn3R6hPvE
 - [ ] Spash screen and UI
 - [ ] Database to record high scores - half done
 - [ ] Support mobile somehow. Not sure what control inputs to use...
+- [ ] Add animations
 
 // Notes:
 Tutorial series uses Bevy 0.12. I'm using Bevy 0.15 because 0.16 is too new to work with Avian3d. Should use [Bevy migration guides](https://bevyengine.org/learn/migration-guides/introduction) to update when possible.

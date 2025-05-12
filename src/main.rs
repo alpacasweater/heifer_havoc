@@ -24,7 +24,8 @@ fn main() {
     .insert_resource(ClearColor(Color::srgb(0.1, 0.4, 0.1)))
     .insert_resource(AmbientLight {
         color: Color::default(),
-        brightness: 0.0
+        brightness: 0.0,
+        affects_lightmapped_meshes: false,
     })
     // Bevy built-ins
     .add_plugins(DefaultPlugins)

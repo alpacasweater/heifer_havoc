@@ -43,7 +43,7 @@ fn spawn_cow(mut commands: Commands, scene_assets: Res<SceneAssets>) {
     commands.spawn((MovingObjectBundle{
         velocity: Velocity::new(Vec3::ZERO),
         acceleration: Acceleration::new(Vec3::ZERO),
-        scene: SceneRoot(scene_assets.cow.clone()),
+        scene: SceneRoot(scene_assets.loaded_assets["Cow"].scene_root_handle.clone()),
         collider: Collider::sphere(1.0),
         transform: Transform::from_translation(START_TRANSLATION).with_rotation(Quat::from_euler(
             EulerRot::YXZ,
@@ -52,7 +52,8 @@ fn spawn_cow(mut commands: Commands, scene_assets: Res<SceneAssets>) {
             0.0, // roll
         )),
     }, 
-    Cow
+    Cow,
+    CollisionEventsEnabled,
 ));
 }
 
@@ -61,7 +62,7 @@ fn cow_movement_controls(
     keyboard_input: Res<ButtonInput<KeyCode>>, 
     time: Res<Time>
 ) {
-    let Ok((mut transform, mut velocity)) = query.get_single_mut() else {
+    let Ok((mut transform, mut velocity)) = query.single_mut() else {
         return;
     };
 
@@ -110,7 +111,7 @@ fn cow_weapon_controls(
     keyboard_input: Res<ButtonInput<KeyCode>>, 
     scene_assets: Res<SceneAssets>,
 ) {
-    let Ok(transform) = query.get_single() else {
+    let Ok(transform) = query.single() else {
         return;
     };
 
@@ -119,10 +120,12 @@ fn cow_weapon_controls(
         commands.spawn((MovingObjectBundle{
             velocity: Velocity::new(transform.forward() * COW_PROJECTILE_SPEED), // Adjust speed as needed
             acceleration: Acceleration::new(Vec3::ZERO),
-            scene: SceneRoot(scene_assets.poop.clone()), // Assuming poop is the projectile
+            scene: SceneRoot(scene_assets.loaded_assets["Poop"].scene_root_handle.clone()),
             collider: Collider::sphere(0.1),
             transform: Transform::from_translation(transform.translation + transform.local_z() * POOP_OFFSET_Z + transform.local_y() * POOP_OFFSET_Y).with_scale(Vec3::splat(3.0)),
-        }, Poop
+        }, 
+        Poop,
+        CollisionEventsEnabled,
     ));
     }
 }
@@ -132,7 +135,7 @@ fn cow_shield_controls(
     query: Query<Entity, With<Cow>>, 
     keyboard_input: Res<ButtonInput<KeyCode>>, 
 ) {
-    let Ok(cow) = query.get_single() else {
+    let Ok(cow) = query.single() else {
         return;
     };
 

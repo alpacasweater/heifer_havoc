@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-avian3d = "0.2.1"
-bevy = "0.15.0"
+avian3d = "0.3.0"
+bevy = "0.16.0"
 rand = "0.9.1"
 getrandom = { version = "0.3", features = ["wasm_js"] }
 

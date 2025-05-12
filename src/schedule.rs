@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use bevy::ecs::schedule::apply_deferred;
 
 #[derive(Debug, Hash, PartialEq, Eq, Clone, SystemSet)]
 pub enum InGameSet {
@@ -24,7 +23,7 @@ impl Plugin for SchedulePlugin {
         )
         .add_systems(
             Update,
-            apply_deferred
+            ApplyDeferred
             .after(InGameSet::DespawnEntities)
             .before(InGameSet::UserInput),
         );

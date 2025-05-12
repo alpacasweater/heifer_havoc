@@ -35,8 +35,8 @@ fn track_cow(
     mut camera_query: Query<&mut Transform, With<Camera>>,
     cow_query: Query<&Transform, (With<Cow>, Without<Camera>)>,
 ) {
-    if let Ok(mut camera_transform) = camera_query.get_single_mut() {
-        if let Ok(cow_transform) = cow_query.get_single() {
+    if let Ok(mut camera_transform) = camera_query.single_mut() {
+        if let Ok(cow_transform) = cow_query.single() {
             camera_transform.translation = cow_transform.translation + Vec3::new(0.0, 0.0, CAMERA_DISTANCE);
             camera_transform.look_at(cow_transform.translation, Vec3::Y);
         } else {

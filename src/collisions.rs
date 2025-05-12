@@ -88,7 +88,7 @@ fn setup(mut commands: Commands) {
 
 fn poop_farmer_collisions(
     mut commands: Commands,
-    mut collision_event_reader: EventReader<Collision>,
+    mut collision_event_reader: EventReader<CollisionStarted>,
     farmers: Query<(), With<Farmer>>,
     poops: Query<(), With<Poop>>,
     mut score: ResMut<Score>,
@@ -98,15 +98,15 @@ fn poop_farmer_collisions(
     let mut farmers_to_despawn: HashSet<Entity> = HashSet::new();
     let mut poops_to_despawn: HashSet<Entity> = HashSet::new();
 
-    for Collision(contacts) in collision_event_reader.read() {
+    for CollisionStarted(entity1, entity2) in collision_event_reader.read() {
         // Check if the entity1 is a farmer and entity2 is a poop involved in the collision are a farmer and a poop
-        if farmers.get(contacts.entity1).is_ok() && poops.get(contacts.entity2).is_ok() {
-            farmers_to_despawn.insert(contacts.entity1);
-            poops_to_despawn.insert(contacts.entity2);
+        if farmers.get(*entity1).is_ok() && poops.get(*entity2).is_ok() {
+            farmers_to_despawn.insert(*entity1);
+            poops_to_despawn.insert(*entity2);
         }
-        else if poops.get(contacts.entity1).is_ok() && farmers.get(contacts.entity2).is_ok() {
-            poops_to_despawn.insert(contacts.entity1);
-            farmers_to_despawn.insert(contacts.entity2);
+        else if poops.get(*entity1).is_ok() && farmers.get(*entity2).is_ok() {
+            poops_to_despawn.insert(*entity1);
+            farmers_to_despawn.insert(*entity2);
         }
     }
 
@@ -125,7 +125,7 @@ fn poop_farmer_collisions(
 
 fn cow_farmer_collisions(
     mut commands: Commands,
-    mut collision_event_reader: EventReader<Collision>,
+    mut collision_event_reader: EventReader<CollisionStarted>,
     farmers: Query<(), With<Farmer>>,
     cows: Query<(), With<Cow>>,
     mut score: ResMut<Score>,
@@ -134,15 +134,15 @@ fn cow_farmer_collisions(
     let mut farmers_to_despawn: HashSet<Entity> = HashSet::new();
     let mut cows_to_despawn: HashSet<Entity> = HashSet::new();
 
-    for Collision(contacts) in collision_event_reader.read() {
+    for CollisionStarted(entity1, entity2) in collision_event_reader.read() {
         // Check if the entity1 is a farmer and entity2 is a poop involved in the collision are a farmer and a poop
-        if farmers.get(contacts.entity1).is_ok() && cows.get(contacts.entity2).is_ok() {
-            farmers_to_despawn.insert(contacts.entity1);
-            cows_to_despawn.insert(contacts.entity2);
+        if farmers.get(*entity1).is_ok() && cows.get(*entity2).is_ok() {
+            farmers_to_despawn.insert(*entity1);
+            cows_to_despawn.insert(*entity2);
         }
-        else if cows.get(contacts.entity1).is_ok() && farmers.get(contacts.entity2).is_ok() {
-            cows_to_despawn.insert(contacts.entity1);
-            farmers_to_despawn.insert(contacts.entity2);
+        else if cows.get(*entity1).is_ok() && farmers.get(*entity2).is_ok() {
+            cows_to_despawn.insert(*entity1);
+            farmers_to_despawn.insert(*entity2);
         }
     }
 
