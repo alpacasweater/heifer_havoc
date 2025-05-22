@@ -27,7 +27,7 @@ Farmer: https://poly.pizza/m/7pn3R6hPvE
 - [ ] Spash screen and UI
 - [ ] Database to record high scores - half done
 - [ ] Support mobile somehow. Not sure what control inputs to use...
-- [ ] Add animations
+- [ ] Add animations (https://github.com/dsgallups/bevy_gltf_animation)
 
 // Notes:
 Tutorial series uses Bevy 0.12. I'm using Bevy 0.15 because 0.16 is too new to work with Avian3d. Should use [Bevy migration guides](https://bevyengine.org/learn/migration-guides/introduction) to update when possible.
